@@ -1,0 +1,530 @@
+<section class="container">
+  <link href="../../../../css/editor.css" rel="stylesheet">
+
+  <div class="row"><!-- container row -->
+    <form class="form-horizontal" novalidate name="cForm">
+
+
+      <!-- Profile Summary =========================== -->
+      <div class="section section-white">
+        <div class="container">
+          <div class="row">
+
+            <div class="col-md-12">
+              <div class="short-line"></div>
+              <h2 class="text-capitalize">{{mainTitle}}</h2>
+            </div>
+
+            <div class="col-md-5">
+              <fieldset><!-- personal information -->
+                <legend>Personal Information</legend>
+                <div class="form-group">
+                  <label for="cname">Name&nbsp;<span ng-show="cForm.name.$error.required" class="text-danger help-inline">*</span></label>
+                  <input type="text" class="form-control text-capitalize" id="cname" placeholder="Name" name="name" ng-model="candidate.name" required>
+                </div>
+                <div class="form-group">
+                  <label for="csurname">Surname&nbsp;<span ng-show="cForm.surname.$error.required" class="text-danger help-inline">*</span></label>
+                  <input type="text" class="form-control text-capitalize" id="csurname" placeholder="Surname" name="surname" ng-model="candidate.surname" required>
+                </div>
+                <div class="form-group">
+                  <label for="ctitle">Title&nbsp;<span ng-show="cForm.title.$error.required" class="text-danger help-inline">*</span></label>
+                  <input type="text" class="form-control text-capitalize" id="ctitle" placeholder="Title" name="title" ng-model="candidate.title" required>
+                </div>
+                <div class="" ng-repeat="(key, value) in candidate.location">
+                  <div class="form-group text-capitalize">
+                    <label for="clocation">{{key}}&nbsp;<span ng-show="cForm.{{key}}.$error.required" class="text-danger help-inline">*</span></label>
+                    <input type="text" class="form-control text-capitalize" id="clocation" placeholder="{{key}}" name="{{key}}" ng-model="candidate.location[key]" required>
+                  </div>
+                </div>
+              </fieldset><!-- /personal information -->
+
+              <fieldset><!-- abailability -->
+                <legend>Availability</legend>
+                <div class="form-group">
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="availability" id="cavalabilityfull" ng-model="candidate.availability" ng-value="'full-time'" required checked>
+                      Full-Time
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="availability" id="cavalabilitypart" ng-model="candidate.availability" ng-value="'part-time'" required>
+                      Part-Time
+                      <span ng-show="cForm.availability.$error.required" class="text-danger help-inline">*</span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset><!-- /abailability -->
+
+
+              <fieldset><!-- skils -->
+                <legend>Skills</legend>
+                <div ng-repeat="skill in candidate.skills">
+                  <div class="form-group">
+                    <label>{{skill.period}} years</label>
+                    <ui-select ng-model="skill.skills" theme="bootstrap" multiple>
+                      <ui-select-match placeholder="Choose a skill or type it, then hit enter">
+                        <span ng-bind="$item"></span>
+                      </ui-select-match>
+                      <ui-select-choices repeat="skill in techskills | filter: $select.search">
+                        <span ng-bind="skill"></span>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
+                </div>
+              </fieldset><!-- /skils -->
+            </div>
+
+            <!-- Profile Video =========================== -->
+            <div class="col-md-7 col-sm-12 profile-video">
+              <fieldset><!-- summary video -->
+                <legend>Summary Video URL</legend>
+                <div class="form-group">
+                  <input type="text" class="form-control" ng-model="videoUrl" name="video" ng-change="updateVideoId(candidate.video, videoUrl, 'video')" placeholder="Paste video URL: YouTube or Vimeo">
+                </div><span class="text-danger" ng-show="cForm.video.$error.pattern">Unsupported video format</span>
+              </fieldset>
+
+              <div class="video-wrapper video-large">
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" ng-src="{{iframeVideoUrl}}" allowfullscreen target="_parent"></iframe>
+                </div>
+              </div>
+            </div><!-- /Profile video -->
+
+          </div>
+        </div>
+      </div><!-- /profile summary-->
+
+      <!-- Profile Logos =========================== -->
+      <fieldset><!-- logos -->
+        <legend>Logos</legend>
+        <div>
+          <label>Add Logos</label>
+          <ui-select ng-model="candidate.logos" theme="bootstrap" multiple>
+            <ui-select-match placeholder="Click here and choose a tech logo for candidate">
+              <span ng-bind="$item"></span>
+            </ui-select-match>
+            <ui-select-choices repeat="techskill in (techskills | filter: $select.search)">
+              <span ng-bind="techskill"></span>
+            </ui-select-choices>
+          </ui-select>
+        </div>
+      </fieldset><!-- /logos -->
+
+      <div class="section section-grey hidden-xs">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 logos-style">
+              <img alt="Technology logo" ng-repeat="logo in candidate.logos" ng-src="../../../../logos/{{logo}}.png"}}/>
+            </div>
+          </div>
+        </div>
+      </div><!--/ end profile logos -->
+
+
+      <!-- Overview section ========================= -->
+      <div class="section section-black">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="short-line"></div>
+            </div>
+            <div class="col-md-12 overview-content">
+              <h2>OVERVIEW</h2>
+              <fieldset><!-- overview -->
+                <div class="form-group">
+                  <textarea class="form-control" ng-model="candidate.overview" rows="3" placeholder="Type a Candidate profile overview here"></textarea>
+                </div>
+              </fieldset><!-- /overview -->
+            </div>
+          </div>
+        </div>
+      </div><!--/ end Overview Section -->
+
+
+      <!-- Experience section -->
+      <div class="section section-white">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="short-line"></div>
+            </div>
+            <div class="col-md-12">
+              <h2>EXPERIENCE</h2>
+            </div>
+          </div>
+
+          <fieldset><!-- experience -->
+            <div class="form-group">
+              
+              <div ng-repeat="(experienceIndex, experience) in candidate.experiences" style="padding-bottom:50px">
+                <div class="form-inline">
+                  <h4>COMPANY:</h4>
+                  <input type="text" name="ecompany" ng-model="experience.company" placeholder="Company">
+                  <input type="text" ng-model="experience.since" placeholder="Since">
+                  <input type="text" ng-model="experience.until" placeholder="Until">
+                  <button type="button" name="button" class="btn btn-delete" ng-click="deleteItem(candidate.experiences, $index)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                  <div class="long-line"></div>
+                </div>
+
+                <div ng-repeat="(positionIndex, position) in experience.positions" style="margin-left:50px;margin-bottom: 50px;">
+                  <div class="inline-form">
+                    <h4>POSITION:</h4>
+                    <input type="text" ng-model="position.name" placeholder="Job Position" required>
+                    <span ng-hide="position.name" class="text-danger help-inline">*</span>
+                    <button type="button" class="btn btn-delete" ng-click="deleteItem(experience.positions, positionIndex)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                    <div class="short-line"></div>
+                  </div>
+
+                  <div ng-repeat="(projectIndex, project) in position.projects" style="margin-left: 50px;margin-bottom: 50px;">
+                    <div class="inline-form">
+                      <h4>PROJECT:</h4>
+                      <input type="text" ng-model="project.name" placeholder="Project" required>
+                      <span ng-hide="project.name" class="text-danger help-inline">*</span>
+                      <button type="button" class="btn btn-delete" ng-click="deleteItem(position.projects, projectIndex)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                      </button>
+                    </div>
+                    <div>
+                      <label>Project Link</label>
+                      <input type="text" ng-model="project.projectlink" ng-change="AddInputUrlProtocol(project.projectlink, project, 'projectlink')" placeholder="Project Link">
+                    </div>
+                    <textarea ng-model="project.description" rows="5" cols="50" placeholder="Project Description"></textarea>
+
+                    <h4 ng-show=project.achievements.length style="margin-left: 50px">ACHIEVEMENTS:</h4>
+                    <div ng-repeat="(achievementIndex, achievement) in project.achievements" style="margin-left: 50px;">
+                      <input type="text" ng-model="achievement.description" placeholder="Main Achievement" required>
+                      <span ng-hide="achievement.description" class="text-danger help-inline">*</span>
+                      <button type="button" class="btn btn-delete" ng-click="deleteItem(project.achievements, achievementIndex)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                      </button>
+                    </div>
+
+                    <div ng-style="{ 'margin-left' : (project.achievements.length) ? '50px' : '0' }">
+                      <button type="button" class="btn btn-add" ng-click="addItem(project.achievements)">Add New Achievement</button>
+                    </div>
+
+                    <div>
+                      <h4>TECH INVOLVED:</h4>
+                      <ui-select ng-model="project.skills" theme="bootstrap" multiple>
+                        <ui-select-match placeholder="Choose a skill or type it, then hit enter">
+                          <span ng-bind="$item"></span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="skill in techskills | filter: $select.search">
+                          <span ng-bind="skill"></span>
+                        </ui-select-choices>
+                      </ui-select>
+                    </div>
+                  </div>
+
+                  <div ng-style="{ 'margin-left' : (position.projects.length) ? '50px' : '0' }" ng-show="position.name">
+                    <button type="button" class="btn btn-add" ng-click="addItem(position.projects, 'array',['achievements', 'skills'])">Add New Project as {{position.name}} in {{experience.company}}</button>
+                  </div>
+
+                </div>
+
+                <div class="form-inline" ng-style="{ 'margin-left' : (experience.positions.length) ? '50px' : '0' }" ng-show=experience.company>
+                  <button type="button" class="btn btn-add" ng-click="addItem(experience.positions, 'array', 'projects')">Add New Position in {{experience.company}}</button>
+                </div>
+
+              </div>
+
+              <button type="button" name="addexperiencebutton" class="btn btn-add" ng-click="addItem(candidate.experiences, 'array', 'positions')">Add New Experience</button>
+
+            </div>
+          </fieldset><!-- /experience -->
+
+        </div><!-- /container -->
+      </div><!-- /experiene section -->
+
+
+      <!-- Education And Teaching section ======================== -->
+      <div class="section section-black">
+        <div class="container"><!-- education & teach container -->
+          <div class="row">
+            <div class="col-md-12">
+              <section class="education-section"><!-- Education Section-->
+                <div class="short-line"></div>
+                <h2>EDUCATION</h2>
+                <div class="row"><!-- Degrees and Certifications -->
+                  <div class="col-md-6"><!-- Degrees ====== -->
+                    <h3>DEGREES</h3>
+                    <div class="long-line"></div>
+                    <div class="arrow-down arrow-down-left"></div>
+                    
+                    <fieldset>
+                      <!-- /degree -->
+                      <div ng-repeat="degree in candidate.education.degrees" style="padding-bottom:50px">
+
+                        <div class="inline">
+                          <input type="text" class="form-control input-help-inline" id="degreeTitle" ng-model="degree.title" placeholder="Title" required>
+                          <span ng-hide="degree.title" class="text-danger help-inline">*</span>
+
+                          <input type="text" class="form-control input-help-inline" ng-model="degree.university" placeholder="University" required>
+                          <span ng-hide="degree.university" class="text-danger help-inline">*</span>
+
+                          <input type="text" class="form-control input-help-inline" ng-model="degree.year" placeholder="Year" required>
+                          <span ng-hide="degree.year" class="text-danger help-inline">*</span>
+                        </div>
+
+                        <button type="button" class="btn btn-delete" ng-click="deleteItem(candidate.education.degrees, $index )">
+                          <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+
+                      </div><!-- /degree -->
+
+                      <button type="button" name="addDegreeButton" class="btn btn-add" ng-click="addItem(candidate.education.degrees)">Add New Degree</button>
+
+                    </fieldset>
+                  </div><!-- /Degrees -->
+
+                  <div class="col-md-6"><!-- Certifications ===== -->
+                    <h3>CERTIFICATIONS</h3>
+                    <div class="long-line"></div>
+                    <div class="arrow-down arrow-down-left"></div>
+
+                    <fieldset>
+                      <!-- /certification -->
+                      <div ng-repeat="certification in candidate.education.certifications" style="padding-bottom:50px">
+
+                        <div class="inline">
+                          <input type="text" class="form-control input-help-inline" id="certificationTitle" ng-model="certification.title" placeholder="Title" required>
+                          <span ng-hide="certification.title" class="text-danger help-inline">*</span>
+
+                          <input type="text" class="form-control input-help-inline" ng-model="certification.institution" placeholder="Institution" required>
+                          <span ng-hide="certification.institution" class="text-danger help-inline">*</span>
+
+                          <input type="text" class="form-control input-help-inline" ng-model="certification.year" placeholder="Year" required>
+                          <span ng-hide="certification.year" class="text-danger help-inline">*</span>
+                        </div>
+                        
+                        <button type="button" class="btn btn-delete" ng-click="deleteItem(candidate.education.certifications, $index )">
+                          <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                      </div>
+
+                      <button type="button" class="btn btn-add" ng-click="addItem(candidate.education.certifications)">Add New Certification</button>
+
+                    </fieldset>
+                  </div><!-- /Certifications -->
+
+                </div><!-- /Degrees and Certifications -->
+              </section><!-- /Education Section-->
+
+              <section class="teaching-section"><!-- Teaching Experience ===== -->
+                <!--div class="short-line"></div>
+                <h2>TEACHING EXPERIENCE</h2-->
+                <div class="row"><!-- row teaching experience -->
+                  <div class="col-md-6"><!-- education institution ====== -->
+                    <div class="short-line"></div>
+                    <h2>TEACHING EXPERIENCE</h2>
+                    <h3>EDUCATION INSTITUTION</h3>
+                    <div class="long-line"></div>
+                    <div class="arrow-down arrow-down-left"></div>
+                    
+                    <fieldset><!-- teaching -->
+
+                      <div ng-repeat="(teachingIndex, teaching) in candidate.teaching" style="margin-bottom:50px">
+                        <div ng-form="cInstitution{{teachingIndex}}"><!-- institution subform -->
+                          <div class="form-group">
+
+                            <div class="form-inline">
+                              <h4>Institution:</h4>
+                              <input type="text" class="form-control input-help-inline" id="institutionName" name="institutionName" ng-model="teaching.institution" placeholder="Institution" required>
+                              <span ng-hide="teaching.institution" class="text-danger help-inline">*</span>
+                              <button type="button" class="btn btn-delete" ng-click="deleteItem(candidate.teaching, $index)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                              </button>
+                            </div>
+
+                          </div>
+
+                          <div ng-repeat="(positionIndex, position) in teaching.positions" style="margin-left: 50px; margin-bottom: 30px"><!-- teching positions -->
+                            <div ng-form="cPositions{{positionIndex}}"><!-- positions subForm -->
+                              <div class="form-group">
+                                <label for="teachingInputSince">
+                                  Period:
+                                  <span ng-show="cPositions{{positionIndex}}.teachingInputSince.$error.required || cPositions{{positionIndex}}.teachingInputUntil.$error.required" class="text-danger help-inline">*</span>
+                                </label>
+                                <div class="form-inline">
+                                  <input type="text" class="form-control" id="teachingInputSince" name="teachingInputSince" ng-model="position.since" placeholder="Since" required>
+                                  <input type="text" class="form-control" id="teachingInputUntil" name="teachingInputUntil" ng-model="position.until" placeholder="Until" required>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="positionName">
+                                  Position:
+                                  <span ng-show="cPositions{{positionIndex}}.positionName.$error.required" class="text-danger help-inline">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="positionName" name="positionName" ng-model="position.name" placeholder="Position" required>
+                              </div>
+                              <div class="form-group">
+                                <label for="positionDesc">
+                                  Description:
+                                  <span ng-show="cPositions{{positionIndex}}.positionDesc.$error.required" class="text-danger help-inline">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="positionDesc" name="positionDesc" ng-model="position.description" placeholder="description" required>
+                              </div>
+                              <div class="bottom-button">
+                                <button type="button" class="btn btn-delete" ng-click="deleteItem(teaching.positions, positionIndex)">
+                                  <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                              </div>
+                            </div><!-- /positions subForm -->
+                          </div><!-- /teching positions -->
+
+                          <div ng-style="{ 'margin-left' : (teaching.positions.length) ? '50px' : '0' }" ng-show="teaching.institution">
+                            <button type="button" class="btn btn-add" ng-click="addItem(teaching.positions)">Add New Position in {{teaching.institution}}</button>
+                          </div>
+
+                        </div><!-- /institution subform -->
+                      </div><!-- /teching institution -->
+
+                      <button type="button" class="btn btn-add" ng-click="addItem(candidate.teaching, 'array', 'positions')">Add New Institution</button>
+
+                    </fieldset><!-- /teaching -->
+
+                  </div><!-- /education institution -->
+                </div><!-- /row teaching experience -->
+              </section><!-- Teaching SECTION -->
+
+            </div>
+          </div>
+        </div><!-- /container-->
+      </div><!-- /education & teach section -->
+
+
+      <!-- Portfolio section ========================== -->
+      <section class="section section-white">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="short-line"></div>
+              <h2>PORTFOLIO</h2><!-- Portfolio Links -->
+              
+              <fieldset><!-- portfolio -->
+                <legend>URLs</legend>
+                <div class="form-group">
+                  <input type="text" class="form-control" ng-model="candidate.portfolio.github" placeholder="Paste gitHub URL">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" ng-model="candidate.portfolio.online" placeholder="Paste Candidate site URL">
+                </div>
+              </fieldset><!-- /portfolio -->
+
+              <fieldset><!-- uploaded portfolio -->
+                <legend>Upload File</legend>
+                <div ng-show="candidate.portfolio.pdf">
+                  <p>
+                    Uploaded Portofolio: {{candidate.portfolio.pdf}}
+                  </p>
+                </div>
+                <div class="form-group">
+                  <input type="file" ngf-select ng-model="portfolio" name="portfolioPDF" ngf-accept="'application/pdf'" ngf-pattern="'application/pdf'" ngf-max-size="2MB">
+                  <span ng-show="cForm.portfolioPDF.$error.pattern" style="color: red">Only PDF files ara allowed. Please choose a PDF file</span>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-add" ng-disabled="cForm.portfolioPDF.$pristine || cForm.portfolioPDF.$error.pattern" ng-click="uploadPortfolio('portfolio')">Upload
+                    <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn btn-delete" ng-click="removeSelectedFile('portfolio', cForm.portfolioPDF)" ng-disabled="cForm.portfolioPDF.$pristine || cForm.portfolioPDF.$error.pattern">
+                    Remove <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                  {{progress}}
+                </div>
+              </fieldset><!-- /uploaded portfolio -->
+
+              <div class="portfolio-video"><!-- Portfolio Video -->
+                <h3>video<br>portfolio</h3>
+                <div class="long-line"></div>
+                <div class="arrow-down arrow-down-left"></div>
+
+                <fieldset><!-- summary video -->
+                  <div class="form-group">
+                    <input type="text" class="form-control" ng-model="portfolioVideoUrl" name="portfolioVideo" ng-change="updateVideoId(candidate.portfolioVideo, portfolioVideoUrl, 'portfolioVideo')" placeholder="Paste video URL">
+                  </div>
+                  <span class="text-danger" ng-show="cForm.portfolioVideo.$error.pattern">Unsupported video format</span>
+                </fieldset>
+
+                <!--preview-->
+                <div class="video-wrapper video-wrapper-center" ng-show="portfolioVideoUrl">
+                  <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" ng-src="{{iframePortfolioUrl}}" allowfullscreen></iframe>
+                  </div>
+                </div>
+
+              </div><!-- /Portfolio Video -->
+
+            </div>
+          </div>
+        </div>
+      </section><!-- /Portfolio section -->
+
+
+      <!-- What Client Say section ================== -->
+      <section class="section section-black">
+        <div class="container"><!-- What client container ====== -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="short-line"></div>
+              <h2>
+                WHAT CLIENTS SAY
+              </h2>
+
+              <fieldset><!-- recomendations -->
+                <h4>Recommendations</h4>
+                <div class="form-group">
+                  
+                  <div ng-repeat="comment in candidate.comments" class='recommendations' style="margin-bottom:50px">
+                    <div>
+                      <textarea name="ccomment" rows="5" cols="50" ng-model="comment.comment" placeholder="Type a recommendation here" required></textarea>
+                      <span ng-hide="comment.comment" class="text-danger help-inline">*</span>
+                    </div>
+                    <div class="inline-form">
+                      <input type="text" name="cauthor" value="" ng-model="comment.author" placeholder="Author" required>
+                      <span ng-hide="comment.author" class="text-danger help-inline">*</span>
+                      <input type="text" name="ccompany" value="" ng-model="comment.company" placeholder="Company" required>
+                      <span ng-hide="comment.company" class="text-danger help-inline">*</span>
+                      <input type="text" name="cposition" value="" ng-model="comment.position" placeholder="Position" required>
+                      <span ng-hide="comment.position" class="text-danger help-inline">*</span>
+                    </div>
+   
+                    <button type="button" name="button" class="btn btn-delete" ng-click="deleteItem(candidate.comments, $index)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+
+                  </div>
+
+                  <button type="button" name="addCommentButton" class="btn btn-add" ng-click="addItem(candidate.comments)">Add Recommendation</button>
+                </div>
+              </fieldset><!-- /recomendations -->
+
+            </div>
+          </div>
+        </div><!-- /What client container -->
+      </section><!-- /What client say -->
+
+
+      <div class="col-md-6 center-block" style="float: none !important"><!-- action section -->
+        <br>
+        <br>
+        <a href="#/" class="btn">Cancel</a>
+        <button ng-click="save()" ng-disabled="isClean() || cForm.$invalid || disableControl" class="btn btn-add">
+          <span class="glyphicon glyphicon-floppy-saved"></span>
+        </button>
+        <button ng-click="destroy()" ng-show="candidate._id" class="btn btn-delete" ng-disabled="disableControl">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
+      </div><!-- /action section -->
+
+    </form>
+  </div>
+
+</section>
